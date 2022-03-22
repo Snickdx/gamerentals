@@ -1,6 +1,8 @@
 from App.models import User, Game, Listing
 from App.database import db
 
+def get_user_listings(user):
+    return user.listings
 
 def list_game(userId, gameId):
     user = User.query.get(userId)
@@ -11,6 +13,3 @@ def list_game(userId, gameId):
         db.session.commit()
         return True
     return False
-
-def get_user_listings(user):
-    return user.listings

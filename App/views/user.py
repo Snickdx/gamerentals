@@ -25,8 +25,8 @@ def signup():
     data = request.json
     result = create_user(username=data['username'], password=data['password'])
     if result:
-        return jsonify({"message": "user created"}), 201
-    return jsonify({"message": "server error"}), 500
+        return jsonify({"message": "User created"}), 201
+    return jsonify({"message": "Server error"}), 500
 
 
 @user_views.route('/static/users')
