@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request, send_from_directory
 from flask_jwt import jwt_required
 
-
 from App.controllers import (
     create_user, 
     get_all_users,
@@ -21,9 +20,14 @@ def client_app():
     users = get_all_users_json()
     return jsonify(users)
 
-@user_views.route('/api/lol')
-def lol():
-    return 'lol'
+@user_views.route('/api/signup')
+def signup():
+    data = request.json
+    result = create_user(username=data['username'], password=data['password'])
+    if result:
+        return jsonify({"message": "user created"}), 201
+    return jsonify({"message": "server error"}), 500
+
 
 @user_views.route('/static/users')
 def static_user_page():

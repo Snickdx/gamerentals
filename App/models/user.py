@@ -1,19 +1,25 @@
 from werkzeug.security import check_password_hash, generate_password_hash
 from App.database import db
+from App.models.listing import listing
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username =  db.Column(db.String, nullable=False)
     password = db.Column(db.String(120), nullable=False)
+    listings = db.relationship('Game', secondary=listing, lazy='subquery', backref=db.backref('users', lazy=True))
 
     def __init__(self, username, password):
         self.username = username
         self.set_password(password)
 
+    def __repr__(self):
+        return f'<User {self.id} - {self.username}>'
+    
     def toDict(self):
         return{
             'id': self.id,
-            'username': self.username
+            'username': self.username,
+            'listings': [ game.toDict() for game in self.listings ]
         }
 
     def set_password(self, password):
