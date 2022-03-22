@@ -7,6 +7,7 @@ class Game(db.Model):
     platform =  db.Column(db.String(30), nullable=False)
     boxart =  db.Column(db.String(300), nullable=False)
     genre =  db.Column(db.String(20), nullable=False)
+    listings = db.relationship('Listing', backref=db.backref('game', lazy='joined'))
 
     def __repr__(self):
         return f'<Game {self.gameId} - {self.title}>' 
