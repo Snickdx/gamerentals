@@ -18,7 +18,7 @@ from App.controllers import (
 # for testing controllers
 
 # This command creates and intializes the database
-@app.cli.command("init")
+@app.cli.command("init", help="Creates and initiailizes the database")
 def initialize():
     create_db(app)
     print('database intialized')
