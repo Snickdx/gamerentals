@@ -15,10 +15,12 @@ class Listing(db.Model):
         self.condition = condition
         self.price = price
 
+    def __repr__(self):
+        return f'<listing {self.listingId} - {self.game.title} - {self.user.username}>'
+
     def toDict(self):
         return{
-            'id': self.listingId,
-            'userId': self.userId,
+            'title': self.game.title,
             'condition': self.condition,
             'price': self.price,
             'created': self.created.strftime("%Y/%m/%d, %H:%M:%S")

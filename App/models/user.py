@@ -12,7 +12,7 @@ class User(db.Model):
         self.set_password(password)
 
     def __repr__(self):
-        return f'<User {self.userId} {self.username}>'
+        return f'<User {self.id} {self.username}>'
     
     def toDict(self):
         return{

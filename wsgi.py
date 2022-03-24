@@ -9,7 +9,9 @@ from App.controllers import (
     get_all_users, 
     get_all_users_json, 
     get_all_games, 
-    create_game, 
+    create_game,
+    delist_game,
+    get_all_listings, 
     get_user_listings, 
     list_game 
 )
@@ -75,6 +77,8 @@ app.cli.add_command(game_cli)
 Generic Commands
 '''
 
+
+
 @app.cli.command("list-game", help="Lets a user list a game for rental")
 def list_game_command():
     print(get_all_users_json())
@@ -86,3 +90,15 @@ def list_game_command():
         print('Game added to user!')
     else :
         print("error add game to user")
+
+@app.cli.command("delist-game", help="Deletes a listing")
+def delist_game_command():
+    print(get_all_users_json())
+    userId = input('Enter a userId: ')
+    print(get_all_listings())
+    listingId = input('Enter a listingId: ')
+    res = delist_game(listingId, userId)
+    if res:
+        print('Listing removed')
+    else :
+        print("Error removing listing")
