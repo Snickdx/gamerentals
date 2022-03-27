@@ -7,13 +7,18 @@ from App.main import app, migrate
 from App.controllers import ( 
     create_user,
     get_all_users, 
-    get_all_users_json, 
+    get_all_users_json,
+    get_available_listings, 
     get_all_games, 
     create_game,
     delist_game,
     get_all_listings, 
     get_user_listings, 
-    list_game 
+    list_game,
+    create_rental,
+    get_outstanding_rentals,
+    return_rental,
+    get_outstanding_user_rentals
 )
 
 # This commands file allow you to create convenient CLI commands
@@ -53,6 +58,12 @@ def list_user_command(format):
     else:
         print(get_all_users_json())
 
+@user_cli.command("games", help="Shows the game listings of a user")
+def list_user__games_command():
+    print(get_all_users())
+    userId = input('Enter a userId: ')
+    print(get_user_listings(userId))
+
 app.cli.add_command(user_cli) # add the group to the cli
 
 '''
@@ -74,14 +85,18 @@ def make_game(title):
 app.cli.add_command(game_cli)
 
 '''
-Generic Commands
+Listing Commands
 '''
 
+list_cli = AppGroup('listing', help='Game Listing commands') 
 
+@list_cli.command("list", help="Lists the available listings in the database")
+def get_listings_command():
+    print(get_available_listings())
 
-@app.cli.command("list-game", help="Lets a user list a game for rental")
+@list_cli.command("create", help="Lets a user list a game for rental")
 def list_game_command():
-    print(get_all_users_json())
+    print(get_all_users())
     userId = input('Enter a userId: ')
     print(get_all_games())
     gameId = input('Enter a gameId: ')
@@ -91,14 +106,49 @@ def list_game_command():
     else :
         print("error add game to user")
 
-@app.cli.command("delist-game", help="Deletes a listing")
+@list_cli.command("remove", help="Delists a game")
 def delist_game_command():
-    print(get_all_users_json())
+    print(get_all_users())
     userId = input('Enter a userId: ')
-    print(get_all_listings())
+    print(get_available_listings())
     listingId = input('Enter a listingId: ')
     res = delist_game(listingId, userId)
     if res:
-        print('Listing removed')
+        print('Game un listed')
     else :
-        print("Error removing listing")
+        print("Error removing listing bad ID or unauthorized")
+
+app.cli.add_command(list_cli)
+
+'''
+Rental Commands
+'''
+
+rental_cli = AppGroup('rental', help='Game Rental commands')
+
+@rental_cli.command("list", help="Lists outstanding rentals")
+def view_rentals_command():
+    print(get_outstanding_rentals())
+
+@rental_cli.command("create", help="Lets a user rent a game")
+def rent_game_command():
+    print(get_all_users())
+    userId = input('Enter user Id: ')
+    print(get_all_listings())
+    listingId = input("Enter a listing Id: ")
+    create_rental(userId, listingId)
+    print("Rental created!")
+
+@rental_cli.command("return", help="Lets a user return a game")
+def return_game_command():
+    print(get_all_users())
+    userId = input('Enter user Id: ')
+    print(get_outstanding_user_rentals(userId))
+    rentalId = input("Enter a rental Id: ")
+    res = return_rental(userId, rentalId)
+    if res :
+        print("rental returned!")
+    else:
+        print("Error, bad id or unauthorized")
+
+app.cli.add_command(rental_cli)
