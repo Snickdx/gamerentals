@@ -5,15 +5,21 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username =  db.Column(db.String, nullable=False)
     password = db.Column(db.String(120), nullable=False)
+    listings = db.relationship('Listing', backref=db.backref('user', lazy='joined'))
+    rentals = db.relationship('Rental', backref=db.backref('user', lazy='joined'))
 
     def __init__(self, username, password):
         self.username = username
         self.set_password(password)
 
+    def __repr__(self):
+        return f'<User {self.id} {self.username}>'
+    
     def toDict(self):
         return{
             'id': self.id,
-            'username': self.username
+            'username': self.username,
+            'listings': [ listing.toDict() for listing in self.listings ]
         }
 
     def set_password(self, password):
