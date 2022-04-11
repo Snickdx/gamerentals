@@ -10,7 +10,7 @@ class Game(db.Model):
     listings = db.relationship('Listing', backref=db.backref('game', lazy='joined'))
 
     def __repr__(self):
-        return f'<Game {self.gameId} - {self.title}>' 
+        return f'<Game {self.gameId} - {self.title} - {self.platform}>' 
 
     def toDict(self):
         return{

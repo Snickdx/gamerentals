@@ -1,8 +1,9 @@
-import click
+import click, csv
 from flask import Flask
 from flask.cli import with_appcontext, AppGroup
 
-from App.database import create_db
+from App.database import create_db, db
+from App.models import Game
 from App.main import app, migrate
 from App.controllers import ( 
     create_user,
@@ -28,6 +29,13 @@ from App.controllers import (
 @app.cli.command("init", help="Creates and initiailizes the database")
 def initialize():
     create_db(app)
+    with open('steam.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            for platform in row['platforms'].split(';'):
+                game = Game(title=row['name'], rating='teen', platform=platform, boxart="https://www.placecage.com/500/500", genre=row['genres'].split(';')[0])
+                db.session.add(game)
+        db.session.commit()
     print('database intialized')
 
 '''
@@ -74,7 +82,7 @@ game_cli = AppGroup('game', help='Game object commands')
 
 @game_cli.command("list", help="Lists the games in the database")
 def get_games():
-    print(get_all_games())
+    print(get_all_games(10))
 
 @game_cli.command("create", help="Creates a game")
 @click.argument("title") #can be customized to accept genre, platform etc
@@ -98,7 +106,7 @@ def get_listings_command():
 def list_game_command():
     print(get_all_users())
     userId = input('Enter a userId: ')
-    print(get_all_games())
+    print(get_all_games(10))
     gameId = input('Enter a gameId: ')
     res = list_game(userId, gameId)
     if res:

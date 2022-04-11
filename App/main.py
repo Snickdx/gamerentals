@@ -8,6 +8,8 @@ from werkzeug.datastructures import  FileStorage
 from datetime import timedelta
 
 
+
+
 from App.database import create_db, get_migrate
 
 from App.controllers import (
@@ -16,12 +18,14 @@ from App.controllers import (
 
 from App.views import (
     user_views,
-    api_views
+    api_views,
+    game_views
 )
 
 views = [
     user_views,
-    api_views
+    api_views,
+    game_views
 ]
 
 def add_views(app, views):
